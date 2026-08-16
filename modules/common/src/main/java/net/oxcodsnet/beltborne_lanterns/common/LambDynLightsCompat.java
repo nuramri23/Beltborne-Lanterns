@@ -48,7 +48,15 @@ public final class LambDynLightsCompat {
             Object livingHandler = makeLiving.invoke(null, handler);
 
             Method register = handlersClass.getMethod("registerDynamicLightHandler", EntityType.class, handlerClass);
-            register.invoke(null, EntityType.PLAYER, livingHandler);
+            // Use reflection to get EntityType.PLAYER to avoid NoSuchFieldError on MC 26.2+
+            EntityType<?> playerType = null;
+            try {
+                playerType = (EntityType<?>) EntityType.class.getField("PLAYER").get(null);
+            } catch (NoSuchFieldException e) {
+                BLMod.LOGGER.warn("Dynamic lights: EntityType.PLAYER field not found, skipping LDL3 handler registration");
+                return;
+            }
+            register.invoke(null, playerType, livingHandler);
             BLMod.LOGGER.info("Dynamic lights: integrated via LambDynamicLights API (handler)");
             INITIALIZED = true;
             return;

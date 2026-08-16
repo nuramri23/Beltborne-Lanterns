@@ -7,6 +7,20 @@ plugins {
 
 group = "${rootProject.maven_group}.fabric"
 
+// Determine MC target (default: 26.1.x, pass -Pmc_target=26.2 for 26.2 build)
+def mcTarget = project.findProperty("mc_target") ?: "26.1"
+def is262 = mcTarget == "26.2"
+
+def activeMcVersion         = is262 ? rootProject.minecraft_version_262         : rootProject.minecraft_version
+def activeFabricLoader      = is262 ? rootProject.fabric_loader_version_262      : rootProject.fabric_loader_version
+def activeFabricApi         = is262 ? rootProject.fabric_api_version_262         : rootProject.fabric_api_version
+def activeClothConfig       = is262 ? rootProject.cloth_config_version_262       : rootProject.cloth_config_version
+def activeModMenu           = is262 ? rootProject.modmenu_version_262            : rootProject.modmenu_version
+def activeLambDynLights     = is262 ? rootProject.lambdynamiclights_version_262  : rootProject.lambdynamiclights_version
+def activeJarSuffix         = is262 ? "26.2" : "26.1.x"
+
+logger.lifecycle("Building for MC ${activeMcVersion} (target: ${mcTarget})")
+
 base {
     archivesName = "${rootProject.archives_name}-fabric"
 }
@@ -72,15 +86,15 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    minecraft "com.mojang:minecraft:${activeMcVersion}"
+    implementation "net.fabricmc:fabric-loader:${activeFabricLoader}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${activeFabricApi}"
     compileOnly "org.spongepowered:mixin:0.8.7"
     
     // Re-enabled optional dependencies
-    implementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
-    compileOnly "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
-    compileOnly "dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${rootProject.lambdynamiclights_version}"
+    implementation "me.shedaniel.cloth:cloth-config-fabric:${activeClothConfig}"
+    compileOnly "com.terraformersmc:modmenu:${activeModMenu}"
+    compileOnly "dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${activeLambDynLights}"
 }
 
 processResources {
@@ -94,17 +108,17 @@ processResources {
         mod_homepage: rootProject.findProperty('mod_homepage'),
         mod_sources: rootProject.findProperty('mod_sources'),
         mod_license: rootProject.findProperty('mod_license'),
-        minecraft_version: rootProject.findProperty('minecraft_version'),
-        fabric_loader_version: rootProject.findProperty('fabric_loader_version'),
-        cloth_config_version: rootProject.findProperty('cloth_config_version'),
-        modmenu_version: rootProject.findProperty('modmenu_version'),
+        minecraft_version: activeMcVersion,
+        fabric_loader_version: activeFabricLoader,
+        cloth_config_version: activeClothConfig,
+        modmenu_version: activeModMenu,
     ]
     inputs.properties(props)
     filesMatching('fabric.mod.json') { expand(props) }
 }
 
 jar {
-    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+26.x.jar")
+    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+${activeJarSuffix}.jar")
 }
 
 // =========== Modrinth =========

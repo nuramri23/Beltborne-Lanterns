@@ -51,6 +51,8 @@ public final class BLFabricClient implements ClientModInitializer {
         // Load the lamp registry from the client's config file on startup.
         // This makes the config screen work before joining a world.
         LampRegistry.init();
+        // Initialize config at startup so renderer uses correct values from config file
+        BLClientConfigAccess.get();
         BLMod.LOGGER.info("Client initialization started [Fabric]");
 
         // Rebuild registry after client joins a server (tags/registries are synced at this point)
@@ -136,22 +138,34 @@ public final class BLFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (openConfigKey != null && openConfigKey.consumeClick()) {
-                // MC 26.2 compatibility: use reflection to access screen field
                 try {
-                    // Try direct field access (works in 26.1)
-                    var screenField = Minecraft.class.getDeclaredField("screen");
-                    screenField.setAccessible(true);
-                    var currentScreen = screenField.get(client);
-                    if (currentScreen == null) {
-                        client.setScreen(LanternClientScreens.openConfig(null));
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    // Fallback for MC 26.2: try to open config anyway
+                    // Try reflection to check current screen (MC 26.1 has 'screen' field, 26.2 removed it)
+                    boolean noScreenOpen = true;
                     try {
-                        client.setScreen(LanternClientScreens.openConfig(null));
-                    } catch (Exception ignored) {
-                        // If all else fails, user can use ModMenu
+                        var f = Minecraft.class.getDeclaredField("screen");
+                        f.setAccessible(true);
+                        noScreenOpen = f.get(client) == null;
+                    } catch (NoSuchFieldException ignored) { /* MC 26.2+ - assume no screen open */ }
+                    
+                    if (noScreenOpen) {
+                        var screen = LanternClientScreens.openConfig(null);
+                        // Try setScreen via reflection for MC 26.2 compatibility
+                        try {
+                            var m = Minecraft.class.getMethod("setScreen", net.minecraft.client.gui.screens.Screen.class);
+                            m.invoke(client, screen);
+                        } catch (NoSuchMethodException e2) {
+                            // setScreen renamed in 26.2 - try alternative names
+                            for (var m : Minecraft.class.getMethods()) {
+                                if (m.getParameterCount() == 1 && 
+                                    m.getParameterTypes()[0].getName().contains("Screen")) {
+                                    m.invoke(client, screen);
+                                    break;
+                                }
+                            }
+                        }
                     }
+                } catch (Exception ignored) {
+                    // Config still accessible via ModMenu
                 }
             }
 

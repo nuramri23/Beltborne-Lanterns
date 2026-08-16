@@ -117,7 +117,7 @@ public class LanternBeltFeatureRenderer extends RenderLayer<HumanoidRenderState,
             0
         );
 
-        BLConfig c = BLConfigs.get();
+        BLConfig c = net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfigAccess.get().toCommon();
 
         matrices.pushPose();
 

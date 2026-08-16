@@ -30,7 +30,35 @@ public final class LambDynLightsInitializer implements DynamicLightsInitializer 
     @Override
     public void onInitializeDynamicLights(DynamicLightsContext context) {
         EntityLightSourceManager mgr = context.entityLightSourceManager();
-        mgr.onRegisterEvent().register(ctx -> ctx.register(EntityType.PLAYER, PlayerLanternLuminance.INSTANCE));
+        mgr.onRegisterEvent().register(ctx -> {
+            try {
+                // Try static field first (MC 26.1.x)
+                @SuppressWarnings("unchecked")
+                EntityType<? extends net.minecraft.world.entity.LivingEntity> playerType =
+                    (EntityType<? extends net.minecraft.world.entity.LivingEntity>)
+                    EntityType.class.getField("PLAYER").get(null);
+                ctx.register(playerType, PlayerLanternLuminance.INSTANCE);
+                BLMod.LOGGER.info("Dynamic lights: registered via EntityType.PLAYER (MC 26.1.x)");
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                // MC 26.2+ - use registryAccess() from the event context
+                try {
+                    var registryAccess = ctx.registryAccess();
+                    var registry = registryAccess.lookupOrThrow(net.minecraft.core.registries.Registries.ENTITY_TYPE);
+                    var playerKey = net.minecraft.resources.ResourceKey.create(
+                        net.minecraft.core.registries.Registries.ENTITY_TYPE,
+                        Identifier.fromNamespaceAndPath("minecraft", "player")
+                    );
+                    registry.get(playerKey).ifPresent(holder -> {
+                        @SuppressWarnings("unchecked")
+                        var playerType = (EntityType<? extends net.minecraft.world.entity.LivingEntity>) holder.value();
+                        ctx.register(playerType, PlayerLanternLuminance.INSTANCE);
+                        BLMod.LOGGER.info("Dynamic lights: registered via registryAccess (MC 26.2+ compat)");
+                    });
+                } catch (Exception e2) {
+                    BLMod.LOGGER.warn("Dynamic lights: could not register player entity - {}", e2.getMessage());
+                }
+            }
+        });
         BLMod.LOGGER.info("Dynamic lights: integrated via LambDynamicLights 4.x (API entrypoint)");
         LambDynLightsCompat.markInitialized();
     }

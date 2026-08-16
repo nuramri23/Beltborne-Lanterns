@@ -53,6 +53,22 @@ public class BLClientConfig implements ConfigData {
     public float fPivotZ()  { return pivotZ100 / 1000f; }
     public float fScale()   { return scale100 / 1000f; }
 
+    /** Convert to common BLConfig snapshot for renderer use. Always reads latest values. */
+    public BLConfig toCommon() {
+        BLConfig out = new BLConfig();
+        out.offsetX100 = this.offsetX100;
+        out.offsetY100 = this.offsetY100;
+        out.offsetZ100 = this.offsetZ100;
+        out.pivotX100  = this.pivotX100;
+        out.pivotY100  = this.pivotY100;
+        out.pivotZ100  = this.pivotZ100;
+        out.rotXDeg    = this.rotXDeg;
+        out.rotYDeg    = this.rotYDeg;
+        out.rotZDeg    = this.rotZDeg;
+        out.scale100   = this.scale100;
+        return out;
+    }
+
     public static class ExtraLampEntry {
         public String id = "modid:item_id";
 
