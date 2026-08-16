@@ -3,31 +3,18 @@
 </p>
 
 <p align="center" style="display:flex;justify-content:center;gap:8px;margin:6px 0;">
-  <a href="https://modrinth.com/project/beltborne-lanterns">
+  <a href="https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.1-port">
     <img alt="Modrinth" height="48" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/modrinth_vector.svg">
   </a>&nbsp;
-  <a href="https://www.curseforge.com/minecraft/mc-mods/beltborne-lanterns">
-    <img alt="CurseForge" height="48" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/curseforge_vector.svg">
-  </a>&nbsp;
-  <a href="https://discord.gg/9JRb3JMAD3">
-    <img alt="Discord" height="48" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/social/discord-plural_vector.svg">
-  </a>&nbsp;
-  <a href="https://github.com/Shadscure/Beltborne-Lanterns">
+  <a href="https://github.com/nuramri23/Beltborne-Lanterns">
     <img alt="GitHub" height="48" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/github_vector.svg">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://modrinth.com/project/beltborne-lanterns">
-    <img alt="Modrinth Downloads" src="https://img.shields.io/modrinth/dt/NUFDZAKS?style=flat&logo=modrinth">
+  <a href="https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.1-port">
+    <img alt="Modrinth Downloads" src="https://img.shields.io/modrinth/dt/aTXtzJFP?style=flat&logo=modrinth">
   </a>
-  <a href="https://www.curseforge.com/minecraft/mc-mods/beltborne-lanterns">
-    <img alt="CurseForge Downloads" src="https://img.shields.io/curseforge/dt/1337474?style=flat&logo=curseforge">
-  </a>
-</p>
-
-<p align="center">
- <img alt="Latest release" src="https://img.shields.io/github/v/release/Shadscure/Beltborne-Lanterns?display_name=release&sort=semver&style=flat-square&color=00ae5d">
 </p>
 
 # Beltborne Lanterns — MC 26.x Port
