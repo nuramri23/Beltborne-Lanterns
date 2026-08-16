@@ -3,7 +3,7 @@
 </p>
 
 <p align="center" style="display:flex;justify-content:center;gap:8px;margin:6px 0;">
-  <a href="https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.1-port">
+  <a href="https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.x-port">
     <img alt="Modrinth" height="48" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/modrinth_vector.svg">
   </a>&nbsp;
   <a href="https://github.com/nuramri23/Beltborne-Lanterns">
@@ -50,9 +50,6 @@ Need it back in your hands? Press **B** again. 💡
 4. Press **B** again — it detaches.
 
 > *Dynamic lighting note:* the in‑world light effect requires a dynamic lighting mod — see FAQ.
-
-## ⧉ Add-ons
-- **Beltborne Lanterns - Accessories Layer**:  [Modrinth](https://modrinth.com/mod/beltborne-lanterns-accessories-layer) / [Curseforge](https://www.curseforge.com/minecraft/mc-mods/beltborne-lanterns-accessories-layer) / [Github](https://github.com/Shadscure/Beltborne-Lanterns-Accessories-Layer)
 
 ## 📷 Showcase
 
@@ -119,8 +116,7 @@ Belt lanterns are **incompatible** with Bliss Shaders' Floodfill colored lightin
 - Supports: MC 1.21.x, NeoForge, Fabric, Quilt
 
 **Ported to MC 26.x (Fabric) by:** [nuramri23](https://github.com/nuramri23)
-- Port repository: [Coming soon]
-- Available on [Modrinth](https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.1-port)
+- Available on [Modrinth](https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.x-port)
 - Supports: MC 26.1, 26.1.1, 26.1.2, 26.2 (Fabric only)
 
 **Port Changes (v1.2.6):**
@@ -131,8 +127,6 @@ Belt lanterns are **incompatible** with Bliss Shaders' Floodfill colored lightin
 - ✅ Support for all MC 26.x versions in single JAR
 - ✅ Fixed MC 26.2 compatibility issues (screen field access)
 
-**Development:**
-- Port developed with assistance from [Kiro IDE](https://kiro.dev) (AI-powered development environment)
 
 ## 📜 License
 
