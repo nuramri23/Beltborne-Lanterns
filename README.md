@@ -73,11 +73,8 @@ Need it back in your hands? Press **B** again. 💡
 
 * **Does it work in multiplayer?** — **YES!** *(Requires both client and server)*
 * **Does it emit light in vanilla Minecraft?** — **No.** Install a dynamic lighting mod to get light from the belt lantern:
-  * **Fabric / Quilt / NeoForge:** [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights)
-  * **Alternative (NeoForge):** [Dynamic Lights (AtomicStryker)](https://www.curseforge.com/minecraft/mc-mods/dynamic-lights)
+  * **Fabric:** [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights)
 * **Will this work with the Soul Lantern?** — **YES!**
-* **Will this work with a lantern from another mod?** — **YES!** Add its **item tag** to the compatible list in the config.
-* **Does this work with the [Accessories](https://modrinth.com/mod/accessories)?** — **YES**, Install the **[Beltborne Lanterns: Accessories Layer](https://modrinth.com/mod/beltborne-lanterns-accessories-layer)** add-on.
 * **Does this work with the [First-person Model](https://modrinth.com/mod/first-person-model)?** — **YES**, and it looks fantastic! *(screenshot under spoiler)*
   <details><summary>Show screenshot</summary>
     <img width="854" height="480" alt="2025-09-02_22 58 42" src="https://github.com/user-attachments/assets/cdcde99f-b18e-4d9c-946e-888637c1ad8e" />
