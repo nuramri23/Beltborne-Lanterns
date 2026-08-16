@@ -51,41 +51,42 @@ public final class BeltLanternServer {
             BeltLanternSave.get(server(player)).set(player.getUUID(), equipped);
             return item;
         } else {
-            if (!creative) {
-                // Return the exact stored stack (including NBT) into the selected hotbar slot
-                ItemStack stored = BeltState.getLampStack(player);
-                ItemStack toReturn = (stored != null && !stored.isEmpty()) ? stored : new ItemStack(current);
+            // Return the exact stored stack (including NBT) to player inventory
+            ItemStack stored = BeltState.getLampStack(player);
+            ItemStack toReturn = (stored != null && !stored.isEmpty()) ? stored : new ItemStack(current);
 
-                var inventory = player.getInventory();
-                int selectedSlot = inventory.getSelectedSlot();
-                boolean placedInSelected = false;
-
-                if (selectedSlot >= 0 && selectedSlot < Inventory.getSelectionSize()) {
-                    ItemStack currentlySelected = inventory.getItem(selectedSlot);
-                    if (currentlySelected.isEmpty()) {
-                        inventory.setItem(selectedSlot, toReturn);
-                        placedInSelected = true;
-                    } else {
-                        // Try to relocate the existing stack elsewhere before placing the lantern
-                        ItemStack displaced = currentlySelected.copy();
-                        inventory.setItem(selectedSlot, toReturn);
-                        boolean inserted = inventory.add(displaced);
-                        if (!inserted && !displaced.isEmpty()) {
-                            player.drop(displaced, true);
-                        }
-                        placedInSelected = true;
-                    }
+            var inventory = player.getInventory();
+            
+            // Try to find an empty slot (prioritize hotbar, then main inventory)
+            boolean placed = false;
+            
+            // First, try hotbar slots (0-8)
+            for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+                if (inventory.getItem(i).isEmpty()) {
+                    inventory.setItem(i, toReturn);
+                    placed = true;
+                    break;
                 }
-
-                if (!placedInSelected) {
-                    // Fallback in case the selected slot index is invalid for some reason
-                    if (!inventory.add(toReturn)) {
-                        player.drop(toReturn, false);
-                    }
-                }
-
-                inventory.setChanged();
             }
+            
+            // If hotbar is full, try main inventory (slots 9-35)
+            if (!placed) {
+                for (int i = Inventory.getSelectionSize(); i < inventory.getContainerSize(); i++) {
+                    if (inventory.getItem(i).isEmpty()) {
+                        inventory.setItem(i, toReturn);
+                        placed = true;
+                        break;
+                    }
+                }
+            }
+            
+            // If inventory is completely full, drop the lantern
+            if (!placed) {
+                player.drop(toReturn, false);
+            }
+
+            inventory.setChanged();
+            
             // Clear state and persistence
             BeltState.setLamp(player, (ItemStack) null);
             BeltLanternSave.get(server(player)).set(player.getUUID(), (ItemStack) null);

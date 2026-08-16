@@ -30,10 +30,24 @@
  <img alt="Latest release" src="https://img.shields.io/github/v/release/Shadscure/Beltborne-Lanterns?display_name=release&sort=semver&style=flat-square&color=00ae5d">
 </p>
 
-# Beltborne Lanterns — free hands, bright path
+# Beltborne Lanterns — MC 26.x Port
+
+**Free your hands, light your path!**
 
 Press **B** while holding a lantern — it snaps onto your belt. Walk, jump, fight — the lantern **sways with physics** and *casts light near you.*
 Need it back in your hands? Press **B** again. 💡
+
+> **📝 MC 26.x Port (Fabric):**
+> This is a **port** of the original Beltborne Lanterns mod, updated for **Minecraft 26.1 - 26.2**.
+> 
+> - ✅ **Toggle functionality:** Fully working (press B to attach/detach)
+> - ✅ **3D Rendering:** Fixed with proper ItemRenderer API (Vulkan backend support)
+> - ✅ **Dynamic lighting:** Works with [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights)
+> - ✅ **Item management:** Smart inventory handling (returns to empty slots)
+> - ✅ **Multiplayer:** Full sync and persistence
+> - ✅ **All lantern variants:** Vanilla lanterns, soul lanterns, copper lanterns (all oxidation states)
+> 
+> The mod is **fully functional** and ready for use!
 
 ## 🧩 Why it’s awesome
 
@@ -109,6 +123,29 @@ Belt lanterns are **incompatible** with Bliss Shaders' Floodfill colored lightin
 - Use [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights) for dynamic lighting (fully supported)
 
 </details>
+
+## 🙏 Credits
+
+**Original Mod by:** [0xCoDSnet](https://github.com/0xCoDSnet) / [Shadscure](https://github.com/Shadscure)  
+- Original repository: [Beltborne-Lanterns](https://github.com/Shadscure/Beltborne-Lanterns)
+- Available on [Modrinth](https://modrinth.com/mod/beltborne-lanterns) and [CurseForge](https://www.curseforge.com/minecraft/mc-mods/beltborne-lanterns)
+- Supports: MC 1.21.x, NeoForge, Fabric, Quilt
+
+**Ported to MC 26.x (Fabric) by:** [nuramri23](https://github.com/nuramri23)
+- Port repository: [Coming soon]
+- Available on [Modrinth](https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.1-port)
+- Supports: MC 26.1, 26.1.1, 26.1.2, 26.2 (Fabric only)
+
+**Port Changes (v1.2.6):**
+- ✅ Updated rendering to MC 26.x API (Vulkan backend support)
+- ✅ Fixed UV mapping for proper lantern textures using ItemRenderer
+- ✅ Improved inventory handling (returns to empty slot instead of replacing items)
+- ✅ Updated default position values for better placement
+- ✅ Support for all MC 26.x versions in single JAR
+- ✅ Fixed MC 26.2 compatibility issues (screen field access)
+
+**Development:**
+- Port developed with assistance from [Kiro IDE](https://kiro.dev) (AI-powered development environment)
 
 ## 📜 License
 

@@ -1,42 +1,41 @@
 package net.oxcodsnet.beltborne_lanterns.common.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.state.BlockState;
-import net.oxcodsnet.beltborne_lanterns.common.LampRegistry;
+import net.minecraft.world.item.ItemStack;
 import net.oxcodsnet.beltborne_lanterns.common.config.BLConfig;
 import net.oxcodsnet.beltborne_lanterns.common.config.BLConfigs;
 import net.oxcodsnet.beltborne_lanterns.common.physics.LanternSwingManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
-public class LanternBeltFeatureRenderer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public class LanternBeltFeatureRenderer extends RenderLayer<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
 
     // The lantern model might need a rotation adjustment to face forward.
     private static final float MODEL_Y_ROTATION_DEGREES = 180f;
     private static boolean UUID_LOOKUP_WARNED = false;
+    
+    // Store ItemStackRenderState for rendering in MC 26.1
+    private net.minecraft.client.renderer.item.ItemStackRenderState lanternRenderState = new net.minecraft.client.renderer.item.ItemStackRenderState();
 
     @SuppressWarnings("unchecked")
     public LanternBeltFeatureRenderer(RenderLayerParent<?, ?> context) {
         // Cast to the exact generic pair expected by the superclass.
-        super((RenderLayerParent<AvatarRenderState, PlayerModel>) context);
+        super((RenderLayerParent<HumanoidRenderState, HumanoidModel<HumanoidRenderState>>) context);
     }
 
     @Override
     public void submit(PoseStack matrices,
                        SubmitNodeCollector collector,
                        int light,
-                       AvatarRenderState state,
+                       HumanoidRenderState state,
                        float limbAngle,
                        float limbDistance) {
         Minecraft mc = Minecraft.getInstance();
@@ -44,10 +43,7 @@ public class LanternBeltFeatureRenderer extends RenderLayer<AvatarRenderState, P
         // Determine the rendered player's UUID from the state when possible.
         UUID subject = null;
         if (mc.level != null) {
-            var entity = mc.level.getEntity(state.id);
-            if (entity instanceof net.minecraft.world.entity.player.Player player) {
-                subject = player.getUUID();
-            }
+            // state.id was removed in 26.1 - use reflection fallback below
         }
         // If unavailable, try to obtain UUID from the render state via reflection to be resilient to mapping changes
         try {
@@ -105,6 +101,22 @@ public class LanternBeltFeatureRenderer extends RenderLayer<AvatarRenderState, P
         var lampItem = ClientBeltPlayers.getLamp(subject);
         if (lampItem == null) return;
 
+        // MC 26.1 rendering: Use ItemModelResolver to prepare ItemStackRenderState (extraction phase)
+        // This is the proper way in MC 26.1, same as Tool Belt mod uses
+        ItemStack lanternStack = new ItemStack(lampItem);
+        var itemModelResolver = Minecraft.getInstance().getItemModelResolver();
+        
+        // Update render state for the lantern item
+        // This prepares the model and texture data for rendering
+        itemModelResolver.updateForTopItem(
+            this.lanternRenderState,
+            lanternStack,
+            net.minecraft.world.item.ItemDisplayContext.FIXED,
+            mc.level,
+            null,  // No specific entity context needed
+            0
+        );
+
         BLConfig c = BLConfigs.get();
 
         matrices.pushPose();
@@ -142,11 +154,21 @@ public class LanternBeltFeatureRenderer extends RenderLayer<AvatarRenderState, P
 
         matrices.translate(-pivX, -pivY, -pivZ);
 
-        BlockState blockState = LampRegistry.getState(lampItem);
-        collector.submitBlock(matrices, blockState, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        // MC 26.1 rendering: Submit the prepared ItemStackRenderState (drawing phase)
+        // This uses vanilla's rendering pipeline with proper UV mapping and textures
+        if (!this.lanternRenderState.isEmpty()) {
+            this.lanternRenderState.submit(
+                matrices,
+                collector,
+                light,
+                net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,
+                0  // No outline color
+            );
+        }
 
         matrices.popPose();
     }
+    
     private static void applyModelPart(PoseStack matrices, ModelPart part) {
         // Apply the part's origin and rotation to the matrix stack
         part.translateAndRotate(matrices);

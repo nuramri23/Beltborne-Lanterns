@@ -1,15 +1,11 @@
 package net.oxcodsnet.beltborne_lanterns.common.client.ui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.InputQuirks;
 import net.minecraft.network.chat.Component;
 import net.oxcodsnet.beltborne_lanterns.common.client.BLClientAbstractions;
 import net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfig;
@@ -18,7 +14,10 @@ import net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfigAccess;
 /**
  * Simple in-game debug UI to tweak lantern FeatureRenderer transforms.
  * Loader-agnostic: relies only on Minecraft client + AutoConfig.
+ * 
+ * TODO: MC 26.1 compatibility - rendering methods need update
  */
+/*
 public class LanternDebugScreen extends Screen {
     private static final float[] STEP_PRESETS = new float[]{0.005f, 0.01f, 0.025f, 0.05f, 0.1f};
     private int stepIndex = 1;
@@ -158,10 +157,6 @@ public class LanternDebugScreen extends Screen {
 
     private static boolean isControlDown() {
         var window = Minecraft.getInstance().getWindow();
-        if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY) {
-            return InputConstants.isKeyDown(window, InputQuirks.EDIT_SHORTCUT_KEY_LEFT)
-                    || InputConstants.isKeyDown(window, InputQuirks.EDIT_SHORTCUT_KEY_RIGHT);
-        }
         return InputConstants.isKeyDown(window, InputConstants.KEY_LCONTROL)
                 || InputConstants.isKeyDown(window, InputConstants.KEY_RCONTROL);
     }
@@ -173,10 +168,10 @@ public class LanternDebugScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         BLClientConfig cfg = BLClientConfigAccess.get();
         boolean used = false;
-        int keyCode = event.key();
+        int keyCode = pKeyCode;
         switch (keyCode) {
             case 262: cfg.offsetX100 += scaledStep100(); used = true; break;
             case 263: cfg.offsetX100 -= scaledStep100(); used = true; break;
@@ -205,29 +200,32 @@ public class LanternDebugScreen extends Screen {
             refreshCopyPreview();
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
-    protected void renderBlurredBackground(GuiGraphics context) {
+    protected void renderBlurredBackground(com.mojang.blaze3d.vertex.PoseStack context) {
         // keep world visible
     }
 
     @Override
-    public void render(GuiGraphics ctx, int mouseX, int mouseY, float delta) {
+    public void render(com.mojang.blaze3d.vertex.PoseStack ctx, int mouseX, int mouseY, float delta) {
         super.render(ctx, mouseX, mouseY, delta);
         BLClientConfig c = BLClientConfigAccess.get();
         int x = 20;
         int y = 10;
-        ctx.drawString(this.font, Component.literal("Lantern Debug (hold Shift=×10, Ctrl=×0.1)" ).withStyle(ChatFormatting.YELLOW), x, y, 0xFFFFFF, false);
+        ctx.pushPose();
+        ctx.translate(0, 0, 0);
+        this.font.draw(ctx, Component.literal("Lantern Debug (hold Shift=×10, Ctrl=×0.1)" ).withStyle(ChatFormatting.YELLOW), x, y, 0xFFFFFF);
         y += 14;
-        ctx.drawString(this.font, Component.literal(String.format("Offset: X=%.3f Y=%.3f Z=%.3f", c.fOffsetX(), c.fOffsetY(), c.fOffsetZ())), x, y, 0xFFFFFF, false);
+        this.font.draw(ctx, Component.literal(String.format("Offset: X=%.3f Y=%.3f Z=%.3f", c.fOffsetX(), c.fOffsetY(), c.fOffsetZ())), x, y, 0xFFFFFF);
         y += 12;
-        ctx.drawString(this.font, Component.literal(String.format("Pivot:  X=%.3f Y=%.3f Z=%.3f", c.fPivotX(), c.fPivotY(), c.fPivotZ())), x, y, 0xFFFFFF, false);
+        this.font.draw(ctx, Component.literal(String.format("Pivot:  X=%.3f Y=%.3f Z=%.3f", c.fPivotX(), c.fPivotY(), c.fPivotZ())), x, y, 0xFFFFFF);
         y += 12;
-        ctx.drawString(this.font, Component.literal(String.format("Rot:    X=%d Y=%d Z=%d", c.rotXDeg, c.rotYDeg, c.rotZDeg)), x, y, 0xFFFFFF, false);
+        this.font.draw(ctx, Component.literal(String.format("Rot:    X=%d Y=%d Z=%d", c.rotXDeg, c.rotYDeg, c.rotZDeg)), x, y, 0xFFFFFF);
         y += 12;
-        ctx.drawString(this.font, Component.literal(String.format("Scale:  %.3f", c.fScale())), x, y, 0xFFFFFF, false);
+        this.font.draw(ctx, Component.literal(String.format("Scale:  %.3f", c.fScale())), x, y, 0xFFFFFF);
+        ctx.popPose();
     }
 
     @Override
@@ -235,3 +233,4 @@ public class LanternDebugScreen extends Screen {
         return false;
     }
 }
+*/

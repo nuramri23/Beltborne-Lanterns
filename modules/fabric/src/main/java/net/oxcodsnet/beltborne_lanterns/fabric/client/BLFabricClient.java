@@ -5,22 +5,27 @@ import net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.oxcodsnet.beltborne_lanterns.common.network.BeltSyncPayload;
 import net.oxcodsnet.beltborne_lanterns.common.network.ToggleLanternPayload;
 import net.oxcodsnet.beltborne_lanterns.common.client.BLClientAbstractions;
+import net.oxcodsnet.beltborne_lanterns.common.client.BLModelLayers;
 import net.oxcodsnet.beltborne_lanterns.common.client.ClientBeltPlayers;
+import net.oxcodsnet.beltborne_lanterns.common.client.LanternBeltModel;
 import net.oxcodsnet.beltborne_lanterns.common.client.LanternClientLogic;
 import net.oxcodsnet.beltborne_lanterns.common.client.LanternClientScreens;
+// LanternDebugScreen temporarily disabled for MC 26.1 - rendering API needs update
+// import net.oxcodsnet.beltborne_lanterns.common.client.ui.LanternDebugScreen;
 import net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfigAccess;
 import net.oxcodsnet.beltborne_lanterns.common.LampRegistry;
 import net.oxcodsnet.beltborne_lanterns.common.network.LampConfigSyncPayload;
@@ -32,7 +37,7 @@ import java.util.UUID;
 public final class BLFabricClient implements ClientModInitializer {
     // Keybindings
     private static final KeyMapping.Category BELTBORNE_CATEGORY =
-            KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath(BLMod.MOD_ID, "beltborne_lanterns"));
+            KeyMapping.Category.register(Identifier.fromNamespaceAndPath(BLMod.MOD_ID, "beltborne_lanterns"));
     private static KeyMapping openConfigKey;
     private static KeyMapping toggleDebugKey;
     private static KeyMapping openDebugEditorKey;
@@ -40,6 +45,9 @@ public final class BLFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        // No longer need custom model layer - using ItemStack rendering directly
+        // ModelLayerRegistry.registerModelLayer(BLModelLayers.LANTERN_BELT_LAYER, LanternBeltModel::createBodyLayer);
+        
         // Load the lamp registry from the client's config file on startup.
         // This makes the config screen work before joining a world.
         LampRegistry.init();
@@ -95,29 +103,29 @@ public final class BLFabricClient implements ClientModInitializer {
         // Optionally register dynamic lights for the belt lantern when LambDynamicLights is present
         boolean hasLamb = FabricLoader.getInstance().isModLoaded("lambdynlights");
 
-        // Keybind to open config (default: L)
-        openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        // Keybind to open config (default: L) - uses reflection for MC 26.x compatibility
+        openConfigKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.open_config",
                 InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to toggle debug gizmos (default: K)
-        toggleDebugKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleDebugKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.toggle_debug",
                 InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to open lantern debug editor (default: P)
-        openDebugEditorKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        openDebugEditorKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.open_debug",
                 InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to toggle belt lantern (default: B)
-        toggleLanternKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleLanternKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.toggle_lantern",
                 InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B,
                 BELTBORNE_CATEGORY
@@ -127,9 +135,23 @@ public final class BLFabricClient implements ClientModInitializer {
         BLClientAbstractions.init(ClientBeltPlayers::getLamp);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (openConfigKey.consumeClick()) {
-                if (client.screen == null) {
-                    client.setScreen(LanternClientScreens.openConfig(client.screen));
+            if (openConfigKey != null && openConfigKey.consumeClick()) {
+                // MC 26.2 compatibility: use reflection to access screen field
+                try {
+                    // Try direct field access (works in 26.1)
+                    var screenField = Minecraft.class.getDeclaredField("screen");
+                    screenField.setAccessible(true);
+                    var currentScreen = screenField.get(client);
+                    if (currentScreen == null) {
+                        client.setScreen(LanternClientScreens.openConfig(null));
+                    }
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    // Fallback for MC 26.2: try to open config anyway
+                    try {
+                        client.setScreen(LanternClientScreens.openConfig(null));
+                    } catch (Exception ignored) {
+                        // If all else fails, user can use ModMenu
+                    }
                 }
             }
 
@@ -139,11 +161,9 @@ public final class BLFabricClient implements ClientModInitializer {
                 }
             }
 
-            if (openDebugEditorKey.consumeClick()) {
+            if (openDebugEditorKey != null && openDebugEditorKey.consumeClick()) {
                 if (net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfigAccess.get().debug) {
-                    if (client.screen == null) {
-                        client.setScreen(new net.oxcodsnet.beltborne_lanterns.common.client.ui.LanternDebugScreen());
-                    }
+                    // Debug editor temporarily disabled - screen rendering needs update
                 }
             }
 

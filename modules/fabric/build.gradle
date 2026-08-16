@@ -1,27 +1,47 @@
 plugins {
-    id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
     id 'com.modrinth.minotaur'
     id 'net.darkhax.curseforgegradle'
+    id 'java-library'
 }
+
+group = "${rootProject.maven_group}.fabric"
 
 base {
     archivesName = "${rootProject.archives_name}-fabric"
 }
 
-def modId = rootProject.findProperty('mod_id')
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+    withSourcesJar()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += rootProject.file("modules/common/src/main/java")
+        }
+        resources {
+            srcDirs += rootProject.file("modules/common/src/main/resources")
+            srcDirs += file("src/main/generated")
+        }
+    }
+}
 
 repositories {
     maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.terraformersmc.com/' }
     maven { url = 'https://maven.gegy.dev' }
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 }
+
 
 loom {
     mixin {
         defaultRefmapName = "beltborne_lanterns-fabric.refmap.json"
     }
-
     runs {
         client {
             client()
@@ -42,37 +62,25 @@ fabricApi {
     configureDataGeneration()
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += file("src/main/generated")
-        }
-    }
-}
-
 tasks.withType(Jar).configureEach {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+}
+
 dependencies {
-    minecraft "net.minecraft:minecraft:${rootProject.minecraft_version}"
-    mappings loom.officialMojangMappings()
-
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-
-    // Cloth Config
-    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
-
-    // Mod Menu (optional)
-    modCompileOnly "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
-    modLocalRuntime "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
-
-    // LambDynamicLights API (compile-only for common code)
-    modCompileOnly "dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${rootProject.lambdynamiclights_version}"
-
-    // LambDynamicLights (runtime only for testing)
-    modLocalRuntime "dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:${rootProject.lambdynamiclights_version}"
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    compileOnly "org.spongepowered:mixin:0.8.7"
+    
+    // Re-enabled optional dependencies
+    implementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    compileOnly "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
+    compileOnly "dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${rootProject.lambdynamiclights_version}"
 }
 
 processResources {
@@ -95,8 +103,8 @@ processResources {
     filesMatching('fabric.mod.json') { expand(props) }
 }
 
-remapJar {
-    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+${rootProject.minecraft_version}.jar")
+jar {
+    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+26.x.jar")
 }
 
 // =========== Modrinth =========
@@ -111,10 +119,10 @@ modrinth {
     projectId = "NUFDZAKS"
     versionNumber = "${project.version}-fabric"
     versionName   = "Beltborne Lanterns v${project.version}+${rootProject.minecraft_version} [Fabric/Quilt]"
-    versionType   = "release"                 // или "beta"/"alpha"
+    versionType   = "release"
     gameVersions  = [ rootProject.minecraft_version ]
     loaders       = [ "fabric","quilt" ]
-    uploadFile    = remapJar                   // из Loom
+    uploadFile    = jar
     changelog     = rootProject.file("CHANGELOG.md").exists() ? rootProject.file("CHANGELOG.md").text : ""
     dependencies { required.project "cloth-config" }
 }
@@ -126,7 +134,6 @@ if (!curse_token) {
     curse_token = "dummy_token_publishing_disabled"
 }
 
-
 def curse_project_id =
         (findProperty("curseforge_project_fabric")
                 ?: System.getenv("CURSEFORGE_PROJECT_FABRIC")
@@ -136,18 +143,15 @@ def curse_project_id =
 
 tasks.register("curseforge", net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     apiToken = curse_token
-
     disableVersionDetection()
-
-    dependsOn remapJar
-    def mainFile = upload(curse_project_id as String, remapJar)
-
+    dependsOn jar
+    def mainFile = upload(curse_project_id as String, jar)
     mainFile.displayName = "Beltborne Lanterns v${project.version}+${rootProject.minecraft_version} [Fabric/Quilt]"
     mainFile.releaseType = "release"
     mainFile.addModLoader("Fabric")
     mainFile.addModLoader("Quilt")
     mainFile.addGameVersion("${rootProject.minecraft_version}")
-    mainFile.addJavaVersion("Java 21")
+    mainFile.addJavaVersion("Java 25")
     mainFile.addEnvironment("Client", "Server")
     mainFile.changelog = rootProject.file("CHANGELOG.md"); mainFile.changelogType = "markdown"
     mainFile.addRequirement("cloth-config")

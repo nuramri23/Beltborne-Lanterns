@@ -35,9 +35,9 @@ public final class BLFabric implements ModInitializer {
 
         // Register payload types for networking.
         // These are common and need to be registered on both client and server.
-        PayloadTypeRegistry.playS2C().register(BeltSyncPayload.ID, BeltSyncPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(LampConfigSyncPayload.ID, LampConfigSyncPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(ToggleLanternPayload.ID, ToggleLanternPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(BeltSyncPayload.ID, BeltSyncPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LampConfigSyncPayload.ID, LampConfigSyncPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ToggleLanternPayload.ID, ToggleLanternPayload.CODEC);
 
         // Register all server-side events
         BLFabricServerEvents.initialize();

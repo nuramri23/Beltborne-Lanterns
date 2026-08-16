@@ -10,26 +10,27 @@ public class BLClientConfig implements ConfigData {
     public boolean debug = false;
 
     // Values stored in thousandths (1/1000)
+    // Default values adjusted for optimal belt positioning
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int offsetX100 = -250; // -0.25
+    public int offsetX100 = -427; // -0.427 blocks (left side)
 
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int offsetY100 = -50; // -0.50
+    public int offsetY100 = -50; // -0.050 blocks (lower)
 
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int offsetZ100 = -600; // -0.60
+    public int offsetZ100 = -210; // -0.210 blocks (forward)
 
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int pivotX100 = 500; // local pivot X
+    public int pivotX100 = 500; // 0.5 blocks
 
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int pivotY100 = 600; // local pivot Y
+    public int pivotY100 = 600; // 0.6 blocks
 
     @ConfigEntry.BoundedDiscrete(min = -2000, max = 2000)
-    public int pivotZ100 = 500; // local pivot Z
+    public int pivotZ100 = 500; // 0.5 blocks
 
     @ConfigEntry.BoundedDiscrete(min = -360, max = 360)
-    public int rotXDeg = 180; //
+    public int rotXDeg = 180; // flipped
 
     @ConfigEntry.BoundedDiscrete(min = -360, max = 360)
     public int rotYDeg = 0;
@@ -38,7 +39,7 @@ public class BLClientConfig implements ConfigData {
     public int rotZDeg = 0;
 
     @ConfigEntry.BoundedDiscrete(min = 250, max = 1000)
-    public int scale100 = 500; // 0.50
+    public int scale100 = 500; // 0.5 scale (50% size)
 
 
     @ConfigEntry.Category("lamps")
