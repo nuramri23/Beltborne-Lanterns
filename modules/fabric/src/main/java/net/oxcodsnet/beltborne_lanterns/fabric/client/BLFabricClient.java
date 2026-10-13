@@ -30,7 +30,6 @@ import net.oxcodsnet.beltborne_lanterns.common.config.BLClientConfigAccess;
 import net.oxcodsnet.beltborne_lanterns.common.LampRegistry;
 import net.oxcodsnet.beltborne_lanterns.common.network.LampConfigSyncPayload;
 import net.oxcodsnet.beltborne_lanterns.common.physics.LanternSwingManager;
-import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.UUID;
 
@@ -108,28 +107,28 @@ public final class BLFabricClient implements ClientModInitializer {
         // Keybind to open config (default: L) - uses reflection for MC 26.x compatibility
         openConfigKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.open_config",
-                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L,
+                InputConstants.Type.KEYBOARD, InputConstants.KEY_L,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to toggle debug gizmos (default: K)
         toggleDebugKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.toggle_debug",
-                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K,
+                InputConstants.Type.KEYBOARD, InputConstants.KEY_K,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to open lantern debug editor (default: P)
         openDebugEditorKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.open_debug",
-                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P,
+                InputConstants.Type.KEYBOARD, InputConstants.KEY_P,
                 BELTBORNE_CATEGORY
         ));
 
         // Keybind to toggle belt lantern (default: B)
         toggleLanternKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.beltborne_lanterns.toggle_lantern",
-                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B,
+                InputConstants.Type.KEYBOARD, InputConstants.KEY_B,
                 BELTBORNE_CATEGORY
         ));
 

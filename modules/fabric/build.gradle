@@ -7,17 +7,18 @@ plugins {
 
 group = "${rootProject.maven_group}.fabric"
 
-// Determine MC target (default: 26.1.x, pass -Pmc_target=26.2 for 26.2 build)
+// Determine MC target (default: 26.1.x, pass -Pmc_target=26.2 or -Pmc_target=26.3)
 def mcTarget = project.findProperty("mc_target") ?: "26.1"
 def is262 = mcTarget == "26.2"
+def is263 = mcTarget == "26.3"
 
-def activeMcVersion         = is262 ? rootProject.minecraft_version_262         : rootProject.minecraft_version
-def activeFabricLoader      = is262 ? rootProject.fabric_loader_version_262      : rootProject.fabric_loader_version
-def activeFabricApi         = is262 ? rootProject.fabric_api_version_262         : rootProject.fabric_api_version
-def activeClothConfig       = is262 ? rootProject.cloth_config_version_262       : rootProject.cloth_config_version
-def activeModMenu           = is262 ? rootProject.modmenu_version_262            : rootProject.modmenu_version
-def activeLambDynLights     = is262 ? rootProject.lambdynamiclights_version_262  : rootProject.lambdynamiclights_version
-def activeJarSuffix         = is262 ? "26.2" : "26.1.x"
+def activeMcVersion         = is263 ? rootProject.minecraft_version_263         : is262 ? rootProject.minecraft_version_262         : rootProject.minecraft_version
+def activeFabricLoader      = is263 ? rootProject.fabric_loader_version_263      : is262 ? rootProject.fabric_loader_version_262      : rootProject.fabric_loader_version
+def activeFabricApi         = is263 ? rootProject.fabric_api_version_263         : is262 ? rootProject.fabric_api_version_262         : rootProject.fabric_api_version
+def activeClothConfig       = is263 ? rootProject.cloth_config_version_263       : is262 ? rootProject.cloth_config_version_262       : rootProject.cloth_config_version
+def activeModMenu           = is263 ? rootProject.modmenu_version_263            : is262 ? rootProject.modmenu_version_262            : rootProject.modmenu_version
+def activeLambDynLights     = is263 ? rootProject.lambdynamiclights_version_263  : is262 ? rootProject.lambdynamiclights_version_262  : rootProject.lambdynamiclights_version
+def activeJarSuffix         = is263 ? "26.3" : is262 ? "26.2" : "26.1.x"
 
 logger.lifecycle("Building for MC ${activeMcVersion} (target: ${mcTarget})")
 
@@ -118,7 +119,7 @@ processResources {
 }
 
 jar {
-    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+${activeJarSuffix}.jar")
+    archiveFileName.set("${rootProject.archives_name}-${project.version}-fabric+26.3.jar")
 }
 
 // =========== Modrinth =========
