@@ -142,15 +142,15 @@ public class LanternBeltFeatureRenderer extends RenderLayer<HumanoidRenderState,
         }
 
         matrices.translate(pivX, pivY, pivZ);
-        matrices.mulPose(Axis.YP.rotationDegrees(MODEL_Y_ROTATION_DEGREES));
+        matrices.rotateDegrees(Axis.YP, MODEL_Y_ROTATION_DEGREES);
         matrices.scale(s, s, s);
 
         float dynX = LanternSwingManager.getXDeg(subject);
         float dynZ = LanternSwingManager.getZDeg(subject);
         float baseX = LanternSwingManager.getBaseXDeg(subject);
-        matrices.mulPose(Axis.XP.rotationDegrees(baseX + dynX));
-        matrices.mulPose(Axis.YP.rotationDegrees(c.rotYDeg));
-        matrices.mulPose(Axis.ZP.rotationDegrees(c.rotZDeg + dynZ));
+        matrices.rotateDegrees(Axis.XP, baseX + dynX);
+        matrices.rotateDegrees(Axis.YP, (float) c.rotYDeg);
+        matrices.rotateDegrees(Axis.ZP, (float) (c.rotZDeg + dynZ));
 
         matrices.translate(-pivX, -pivY, -pivZ);
 

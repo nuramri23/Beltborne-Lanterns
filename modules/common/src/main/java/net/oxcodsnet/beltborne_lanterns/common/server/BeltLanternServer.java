@@ -82,7 +82,7 @@ public final class BeltLanternServer {
             
             // If inventory is completely full, drop the lantern
             if (!placed) {
-                player.drop(toReturn, false);
+                player.spawnAtLocation((net.minecraft.server.level.ServerLevel) player.level(), toReturn);
             }
 
             inventory.setChanged();
@@ -117,10 +117,10 @@ public final class BeltLanternServer {
         // Drop the exact stored stack with NBT
         ItemStack stored = BeltState.getLampStack(player);
         if (stored != null && !stored.isEmpty()) {
-            player.drop(stored, false);
+            player.spawnAtLocation((net.minecraft.server.level.ServerLevel) player.level(), stored);
         } else {
             ItemStack stack = new ItemStack(lamp);
-            player.drop(stack, false);
+            player.spawnAtLocation((net.minecraft.server.level.ServerLevel) player.level(), stack);
         }
         BeltState.setLamp(player, (ItemStack) null);
         BeltLanternSave.get(server(player)).set(player.getUUID(), (ItemStack) null);
@@ -154,9 +154,9 @@ public final class BeltLanternServer {
         // Drop from old player's position and clear state
         ItemStack stored = BeltState.getLampStack(oldPlayer);
         if (stored != null && !stored.isEmpty()) {
-            oldPlayer.drop(stored, false);
+            oldPlayer.spawnAtLocation((net.minecraft.server.level.ServerLevel) oldPlayer.level(), stored);
         } else {
-            oldPlayer.drop(new ItemStack(lamp), false);
+            oldPlayer.spawnAtLocation((net.minecraft.server.level.ServerLevel) oldPlayer.level(), new ItemStack(lamp));
         }
         BeltState.setLamp(oldPlayer, (ItemStack) null);
         BeltLanternSave.get(server(oldPlayer)).set(oldPlayer.getUUID(), (ItemStack) null);
