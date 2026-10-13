@@ -51,60 +51,6 @@ Need it back in your hands? Press **B** again. 💡
 
 > *Dynamic lighting note:* the in‑world light effect requires a dynamic lighting mod — see FAQ.
 
-## 📷 Showcase
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo1.webp" alt="demo 1" width="380"></td>
-    <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo2.webp" alt="demo 2" width="380"></td>
-  
-  </tr>
-  <tr>
-     <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo3.webp" alt="demo 3" width="380"></td>
-     <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo4.webp" alt="demo 4" width="380"></td>
-  </tr>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo5.webp" alt="demo 5" width="380"></td>
-    <td><img src="https://raw.githubusercontent.com/0xCoDSnet/Beltborne-Lanterns/refs/heads/1.21-architectury-loom/demo/demo6.webp" alt="demo 6" width="380"></td>
-  </tr>
-</table>
-
-## ❓ FAQ — compatibility & multiplayer
-
-* **Does it work in multiplayer?** — **YES!** *(Requires both client and server)*
-* **Does it emit light in vanilla Minecraft?** — **No.** Install a dynamic lighting mod to get light from the belt lantern:
-  * **Fabric:** [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights)
-* **Will this work with the Soul Lantern?** — **YES!**
-* **Does this work with the [First-person Model](https://modrinth.com/mod/first-person-model)?** — **YES**, and it looks fantastic! *(screenshot under spoiler)*
-  <details><summary>Show screenshot</summary>
-    <img width="854" height="480" alt="2025-09-02_22 58 42" src="https://github.com/user-attachments/assets/cdcde99f-b18e-4d9c-946e-888637c1ad8e" />
-  </details>
-
-
-## Dynamic Lights Compatibility
-<details><summary>Sodium Dynamic Lights</summary>
-
-**Sodium Dynamic Lights** (fork of LambDynamicLights) is also technically supported, but:
-- Issues related to Sodium Dynamic Lights will be closed
-- Please use [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights) for full support
-- I cannot maintain compatibility with forks that may diverge from the original API
-
-</details>
-
-## Known Limitations
-
-<details><summary>Bliss Shaders Floodfill</summary>
-
-Belt lanterns are **incompatible** with Bliss Shaders' Floodfill colored lighting option.
-
-**Why:** Floodfill voxelizes world blocks to compute lighting. Entity-attached items (like belt lanterns) exist outside this voxel space and cannot be detected.
-
-**Workarounds:**
-- Disable Floodfill in Bliss Shaders settings
-- Use [LambDynamicLights](https://modrinth.com/mod/lambdynamiclights) for dynamic lighting (fully supported)
-
-</details>
-
 ## 🙏 Credits
 
 **Original Mod by:** [0xCoDSnet](https://github.com/0xCoDSnet) / [Shadscure](https://github.com/Shadscure)  
