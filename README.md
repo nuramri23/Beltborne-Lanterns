@@ -25,7 +25,7 @@ Press **B** while holding a lantern — it snaps onto your belt. Walk, jump, fig
 Need it back in your hands? Press **B** again. 💡
 
 > **📝 MC 26.x Port (Fabric):**
-> This is a **port** of the original Beltborne Lanterns mod, updated for **Minecraft 26.1 - 26.2**.
+> This is a **port** of the original Beltborne Lanterns mod, updated for **Minecraft 26.1 - latest**.
 > 
 > - ✅ **Toggle functionality:** Fully working (press B to attach/detach)
 > - ✅ **3D Rendering:** Fixed with proper ItemRenderer API (Vulkan backend support)
@@ -114,15 +114,13 @@ Belt lanterns are **incompatible** with Bliss Shaders' Floodfill colored lightin
 
 **Ported to MC 26.x (Fabric) by:** [nuramri23](https://github.com/nuramri23)
 - Available on [Modrinth](https://modrinth.com/mod/beltborne-lanterns-unofficial-mc-26.x-port)
-- Supports: MC 26.1, 26.1.1, 26.1.2, 26.2 (Fabric only)
+- Supports: MC 26.1 - latest (Fabric only)
 
-**Port Changes (v1.2.6):**
+**Port Changes (v1.2.7):**
 - ✅ Updated rendering to MC 26.x API (Vulkan backend support)
 - ✅ Fixed UV mapping for proper lantern textures using ItemRenderer
 - ✅ Improved inventory handling (returns to empty slot instead of replacing items)
 - ✅ Updated default position values for better placement
-- ✅ Support for all MC 26.x versions in single JAR
-- ✅ Fixed MC 26.2 compatibility issues (screen field access)
 
 
 ## 📜 License
